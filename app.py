@@ -46,6 +46,13 @@ def append_data(date, description, category, amount):
     sheet = client.open("Food Expenses Data").worksheet("expenses")
     sheet.append_row([date, description, category, amount])
 
+def delete_data_row(row_index):
+    client = init_connection()
+    sheet = client.open("Food Expenses Data").worksheet("expenses")
+    # Google Sheets rows are 1-indexed, and row 1 is headers. 
+    # Therefore, dataframe index 0 corresponds to sheet row 2.
+    sheet.delete_rows(row_index + 2)
+
 df = load_data()
 
 # 3. Sidebar: Budget Settings & Filters
@@ -133,5 +140,21 @@ if not filtered_df.empty:
             use_container_width=True,
             hide_index=True,
         )
+
+    # 8. Delete Expense Section
+    st.markdown("---")
+    with st.expander("🗑️ Delete an Expense"):
+        expense_options = {}
+        for idx, row in filtered_df.iterrows():
+            date_str = row["Date"].strftime("%Y-%m-%d")
+            label = f"{date_str} | {row['Description']} | RM {row['Amount']:.2f} ({row['Category'])})"
+            expense_options[label] = idx
+
+        selected_label = st.selectbox("Select expense to remove", list(expense_options.keys()))
+        if st.button("Delete Selected Expense", type="primary"):
+            row_to_delete = expense_options[selected_label]
+            delete_data_row(row_to_delete)
+            st.toast("🗑️ Expense deleted successfully from Google Sheets!")
+            st.rerun()
 else:
     st.info(f"No expenses recorded yet for {selected_month}.")
