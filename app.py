@@ -147,7 +147,7 @@ if not filtered_df.empty:
         expense_options = {}
         for idx, row in filtered_df.iterrows():
             date_str = row["Date"].strftime("%Y-%m-%d")
-            label = f"{date_str} | {row['Description']} | RM {row['Amount']:.2f} ({row['Category'])})"
+            label = f"{date_str} | {row['Description']} | RM {row['Amount']:.2f} ({row['Category']})"
             expense_options[label] = idx
 
         selected_label = st.selectbox("Select expense to remove", list(expense_options.keys()))
