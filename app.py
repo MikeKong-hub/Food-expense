@@ -20,7 +20,6 @@ def init_connection():
         "https://spreadsheets.google.com/feeds",
         "https://www.googleapis.com/auth/drive",
     ]
-    # Connect using Streamlit secrets
     creds_dict = dict(st.secrets["gcp_service_account"])
     creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
     client = gspread.authorize(creds)
@@ -49,12 +48,21 @@ def append_data(date, description, category, amount):
 
 df = load_data()
 
-# 3. Custom Modern CSS Styling
+# 3. Custom Modern CSS Styling (Fixed Text Contrast)
 st.markdown("""
 <style>
-.stApp { background-color: #f8f9fa; font-family: 'Inter', sans-serif; }
+/* Force clear readable text and light background */
+.stApp { background-color: #f8f9fa; color: #212529; font-family: 'Inter', sans-serif; }
+h1, h2, h3, h4, h5, h6, p, span, label, div[data-testid="stMarkdownContainer"] { color: #212529 !important; }
+
+/* Metric Cards */
 div[data-testid="stMetric"] { background-color: #ffffff; border: 1px solid #e9ecef; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); }
+div[data-testid="stMetricLabel"] { font-size: 0.9rem !important; font-weight: 600 !important; color: #6c757d !important; text-transform: uppercase; }
+div[data-testid="stMetricValue"] { font-size: 1.8rem !important; font-weight: 700 !important; color: #212529 !important; }
+
+/* Form Container */
 div[data-testid="stForm"] { background-color: #ffffff; border: 1px solid #e9ecef; border-radius: 16px; padding: 28px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
+
 .app-title { font-size: 2.2rem; font-weight: 800; color: #1a1d20; margin-bottom: 0.2rem; }
 .app-subtitle { font-size: 1.05rem; color: #6c757d; margin-bottom: 1.8rem; }
 </style>
