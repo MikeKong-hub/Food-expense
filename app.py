@@ -48,37 +48,8 @@ def append_data(date, description, category, amount):
 
 df = load_data()
 
-# 3. Custom Modern CSS Styling (Fixed Sidebar Text Contrast)
-st.markdown("""
-<style>
-/* Base app background */
-.stApp { background-color: #f8f9fa; font-family: 'Inter', sans-serif; }
-
-/* Fix Sidebar Text to be White and Visible */
-section[data-testid="stSidebar"] * {
-    color: #ffffff !important;
-}
-
-/* Main Content Area Text Styling */
-.main h1, .main h2, .main h3, .main h4, .main h5, .main h6, .main p, .main span, .main label { 
-    color: #212529 !important; 
-}
-
-/* Metric Cards */
-div[data-testid="stMetric"] { background-color: #ffffff; border: 1px solid #e9ecef; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); }
-div[data-testid="stMetricLabel"] { font-size: 0.9rem !important; font-weight: 600 !important; color: #6c757d !important; text-transform: uppercase; }
-div[data-testid="stMetricValue"] { font-size: 1.8rem !important; font-weight: 700 !important; color: #212529 !important; }
-
-/* Form Container */
-div[data-testid="stForm"] { background-color: #ffffff; border: 1px solid #e9ecef; border-radius: 16px; padding: 28px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
-
-.app-title { font-size: 2.2rem; font-weight: 800; color: #1a1d20; margin-bottom: 0.2rem; }
-.app-subtitle { font-size: 1.05rem; color: #6c757d; margin-bottom: 1.8rem; }
-</style>
-""", unsafe_allow_html=True)
-
-# 4. Sidebar: Budget Settings & Filters
-st.sidebar.markdown("### ⚙️ Settings & Archive")
+# 3. Sidebar: Budget Settings & Filters
+st.sidebar.title("⚙️ Settings & Archive")
 monthly_budget = st.sidebar.number_input("Set Monthly Budget (RM)", min_value=0.0, value=800.00, step=50.00, format="%.2f")
 
 current_month_str = datetime.now().strftime("%Y-%m")
@@ -96,12 +67,12 @@ else:
 st.sidebar.markdown("---")
 st.sidebar.caption("💡 Add this app to your phone home screen for instant access!")
 
-# 5. Header Section
-st.markdown('<div class="app-title">🍔 Food Expense Tracker</div>', unsafe_allow_html=True)
-st.markdown(f'<div class="app-subtitle">Overview and quick expense logging for <b>{selected_month}</b></div>', unsafe_allow_html=True)
+# 4. Header Section
+st.title("🍔 Food Expense Tracker")
+st.caption(f"Overview and quick expense logging for **{selected_month}**")
 
-# 6. Quick Entry Form
-st.markdown("### ➕ Quick Entry")
+# 5. Quick Entry Form
+st.subheader("➕ Quick Entry")
 with st.form("expense_form", clear_on_submit=True):
     col1, col2, col3 = st.columns([2, 1.5, 1.5])
     with col1:
@@ -124,8 +95,8 @@ with st.form("expense_form", clear_on_submit=True):
 
 st.markdown("---")
 
-# 7. KPI Metrics Dashboard
-st.markdown("### 📊 Budget Overview")
+# 6. KPI Metrics Dashboard
+st.subheader("📊 Budget Overview")
 total_spent = filtered_df["Amount"].sum() if not filtered_df.empty else 0.00
 remaining_budget = monthly_budget - total_spent
 
@@ -142,21 +113,25 @@ st.progress(min(usage_pct, 1.0), text=f"Budget Consumed: {usage_pct * 100:.1f}%"
 
 st.markdown("---")
 
-# 8. Charts & Log
+# 7. Visual Breakdown & History
 if not filtered_df.empty:
     col_left, col_right = st.columns([1, 1.2])
     with col_left:
-        st.markdown("### 🍩 Spending Breakdown")
+        st.subheader("🍩 Spending Breakdown")
         category_summary = filtered_df.groupby("Category")["Amount"].sum().reset_index()
         fig = px.pie(category_summary, values="Amount", names="Category", hole=0.5, color="Category", color_discrete_map={"Groceries": "#2ec4b6", "Food Outside": "#ff9f1c"})
         fig.update_traces(textposition="inside", textinfo="percent+label")
-        fig.update_layout(margin=dict(t=20, b=20, l=20, r=20), showlegend=False, height=280)
+        fig.update_layout(margin=dict(t=20, b=20, l=20, r=20), showlegend=True, height=300)
         st.plotly_chart(fig, use_container_width=True)
 
     with col_right:
-        st.markdown("### 📋 Daily Log")
+        st.subheader("📋 Daily Log")
         display_df = filtered_df.copy()
         display_df["Date"] = display_df["Date"].dt.strftime("%Y-%m-%d")
-        st.dataframe(display_df[["Date", "Description", "Category", "Amount"]].sort_values(by="Date", ascending=False), use_container_width=True, hide_index=True)
+        st.dataframe(
+            display_df[["Date", "Description", "Category", "Amount"]].sort_values(by="Date", ascending=False),
+            use_container_width=True,
+            hide_index=True,
+        )
 else:
     st.info(f"No expenses recorded yet for {selected_month}.")
