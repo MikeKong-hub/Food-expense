@@ -48,12 +48,21 @@ def append_data(date, description, category, amount):
 
 df = load_data()
 
-# 3. Custom Modern CSS Styling (Fixed Text Contrast)
+# 3. Custom Modern CSS Styling (Fixed Sidebar Text Contrast)
 st.markdown("""
 <style>
-/* Force clear readable text and light background */
-.stApp { background-color: #f8f9fa; color: #212529; font-family: 'Inter', sans-serif; }
-h1, h2, h3, h4, h5, h6, p, span, label, div[data-testid="stMarkdownContainer"] { color: #212529 !important; }
+/* Base app background */
+.stApp { background-color: #f8f9fa; font-family: 'Inter', sans-serif; }
+
+/* Fix Sidebar Text to be White and Visible */
+section[data-testid="stSidebar"] * {
+    color: #ffffff !important;
+}
+
+/* Main Content Area Text Styling */
+.main h1, .main h2, .main h3, .main h4, .main h5, .main h6, .main p, .main span, .main label { 
+    color: #212529 !important; 
+}
 
 /* Metric Cards */
 div[data-testid="stMetric"] { background-color: #ffffff; border: 1px solid #e9ecef; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); }
