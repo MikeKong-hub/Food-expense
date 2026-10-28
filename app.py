@@ -7,7 +7,7 @@ from oauth2client.service_account import ServiceAccountCredentials
 
 # 1. Page Config
 st.set_page_config(
-    page_title="Food Expense Tracker",
+    page_title="Food & Entertainment Expense Tracker",
     page_icon="💳",
     layout="wide",
     initial_sidebar_state="expanded",
@@ -72,10 +72,10 @@ else:
     filtered_df = df
 
 st.sidebar.markdown("---")
-st.sidebar.caption("💡 Add this app to your phone home screen for instant access!")
+st.sidebar.caption("💡 YO! CONTROL YOURSELF")
 
 # 4. Header Section
-st.title("🍔 Food Expense Tracker")
+st.title("🍔🎬 Expense Tracker")
 st.caption(f"Overview and quick expense logging for **{selected_month}**")
 
 # 5. Quick Entry Form
@@ -85,7 +85,7 @@ with st.form("expense_form", clear_on_submit=True):
     with col1:
         description = st.text_input("Description / Item", placeholder="e.g., Chicken Rice")
     with col2:
-        category = st.selectbox("Category", ["Groceries", "Food Outside"])
+        category = st.selectbox("Category", ["Groceries", "Breakfast", "Lunch", "Dinner", "Supper", "Snacks", "Entertainment"])
     with col3:
         amount = st.number_input("Amount (RM)", min_value=0.0, format="%.2f", step=5.0)
 
