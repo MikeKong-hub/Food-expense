@@ -75,7 +75,7 @@ st.sidebar.markdown("---")
 st.sidebar.caption("💡 YO! CONTROL YOURSELF")
 
 # 4. Header Section
-st.markdown("<h1>🍔🎬<br>Expense Tracker</h1>", unsafe_allow_html=True)
+st.markdown("<h1>🍔🎬<br>Mickey's Tracker</h1>", unsafe_allow_html=True)
 st.caption(f"Overview and quick expense logging for **{selected_month}**")
 
 # 5. Quick Entry Form
