@@ -107,14 +107,32 @@ st.subheader("📊 Budget Overview")
 total_spent = filtered_df["Amount"].sum() if not filtered_df.empty else 0.00
 remaining_budget = monthly_budget - total_spent
 
+# ⚠️ Over-Budget Red Warning Banner
+if remaining_budget < 0:
+    st.error(
+        f"🚨 **BUDGET EXCEEDED!** You are **RM {abs(remaining_budget):,.2f}** over your monthly budget of RM {monthly_budget:,.2f}! Time to cut back!"
+    )
+elif remaining_budget <= monthly_budget * 0.1 and monthly_budget > 0:
+    st.warning(
+        f"⚠️ **WARNING:** You only have **RM {remaining_budget:,.2f}** (less than 10%) left in your budget!"
+    )
+
+# Metrics Cards
 m1, m2, m3 = st.columns(3)
 m1.metric("Monthly Budget", f"RM {monthly_budget:,.2f}")
 m2.metric("Total Spent", f"RM {total_spent:,.2f}")
+
 if remaining_budget >= 0:
     m3.metric("Remaining Budget", f"RM {remaining_budget:,.2f}")
 else:
-    m3.metric("Over Budget By", f"RM {abs(remaining_budget):,.2f}", delta=f"-RM {abs(remaining_budget):,.2f}", delta_color="inverse")
+    m3.metric(
+        "Over Budget By",
+        f"RM {abs(remaining_budget):,.2f}",
+        delta=f"-RM {abs(remaining_budget):,.2f}",
+        delta_color="inverse",  # Displays in prominent Red
+    )
 
+# Progress Bar
 usage_pct = (total_spent / monthly_budget) if monthly_budget > 0 else 0.0
 st.progress(min(usage_pct, 1.0), text=f"Budget Consumed: {usage_pct * 100:.1f}%")
 
