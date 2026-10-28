@@ -85,7 +85,7 @@ with st.form("expense_form", clear_on_submit=True):
     with col1:
         description = st.text_input("Description / Item", placeholder="e.g., Chicken Rice")
     with col2:
-        category = st.selectbox("Category", ["Groceries", "Breakfast", "Lunch", "Dinner", "Supper", "Snacks", "Entertainment"])
+        category = st.selectbox("Category", ["Groceries", "Breakfast", "Lunch", "Dinner", "Supper", "Snacks", "Entertainment", "Minnie"])
     with col3:
         amount = st.number_input("Amount (RM)", min_value=0.0, format="%.2f", step=5.0)
 
@@ -110,11 +110,11 @@ remaining_budget = monthly_budget - total_spent
 # ⚠️ Over-Budget Red Warning Banner
 if remaining_budget < 0:
     st.error(
-        f"🚨 **BUDGET EXCEEDED!** You are **RM {abs(remaining_budget):,.2f}** over your monthly budget of RM {monthly_budget:,.2f}! Time to cut back!"
+        f"🚨**Ooi MANGKUK! **BUDGET EXCEEDED!** You are **RM {abs(remaining_budget):,.2f}** over your monthly budget of RM {monthly_budget:,.2f}! Watch Your Pocket!"
     )
 elif remaining_budget <= monthly_budget * 0.1 and monthly_budget > 0:
     st.warning(
-        f"⚠️ **WARNING:** You only have **RM {remaining_budget:,.2f}** (less than 10%) left in your budget!"
+        f"⚠️ **WARNING:****Agak2 Sikit**~ You only have **RM {remaining_budget:,.2f}** (less than 10%) left in your budget!"
     )
 
 # Metrics Cards
@@ -142,9 +142,35 @@ st.markdown("---")
 if not filtered_df.empty:
     col_left, col_right = st.columns([1, 1.2])
     with col_left:
+        st.subheader("Spending Breakdown")
+        category_summary = filtered_df.groupby("Category")["Amount"].sum().reset_index()
+        # 7. Visual Breakdown & History
+if not filtered_df.empty:
+    col_left, col_right = st.columns([1, 1.2])
+    with col_left:
         st.subheader("🍩 Spending Breakdown")
         category_summary = filtered_df.groupby("Category")["Amount"].sum().reset_index()
-        fig = px.pie(category_summary, values="Amount", names="Category", hole=0.5, color="Category", color_discrete_map={"Groceries": "#2ec4b6", "Food Outside": "#ff9f1c"})
+        
+        # Color mapping for all 8 categories
+        category_colors = {
+            "Groceries": "#2ec4b6",
+            "Breakfast": "#ff9f1c",
+            "Lunch": "#e71d36",
+            "Dinner": "#7209b7",
+            "Supper": "#3a86ff",
+            "Snacks": "#fb5607",
+            "Entertainment": "#ff006e",
+            "Minnie": "#ff69b4"
+        }
+        
+        fig = px.pie(
+            category_summary, 
+            values="Amount", 
+            names="Category", 
+            hole=0.5, 
+            color="Category", 
+            color_discrete_map=category_colors
+        )
         fig.update_traces(textposition="inside", textinfo="percent+label")
         fig.update_layout(margin=dict(t=20, b=20, l=20, r=20), showlegend=True, height=300)
         st.plotly_chart(fig, use_container_width=True)
@@ -172,7 +198,7 @@ if not filtered_df.empty:
         if st.button("Delete Selected Expense", type="primary"):
             row_to_delete = expense_options[selected_label]
             delete_data_row(row_to_delete)
-            st.toast("🗑️ Expense deleted successfully from Google Sheets!")
+            st.toast("🗑️ Expense deleted successfully!")
             st.rerun()
 else:
     st.info(f"No expenses recorded yet for {selected_month}.")
